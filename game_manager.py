@@ -20,11 +20,21 @@ class GameManager:
             print()
 
 
-    def get_game_record(self, game_id):
-        
+    def get_game_record(self, game_name):
         cursor = self.conn.cursor()
-
-        query = "SELECT * FROM VideoGames WHERE id = ?"
+        query = "SELECT name FROM VideoGames WHERE id = ?"
+        cursor.execute(query, (game_name,))
+        record = cursor.fetchone()
+        return record  # Return the game name
+    
+    def get_game_name(self, game_id):
+        cursor = self.conn.cursor()
+        query = "SELECT name FROM VideoGames WHERE id = ?"
         cursor.execute(query, (game_id,))
         record = cursor.fetchone()
-        return record
+
+        if record:
+            game_name = record[0]
+            return game_name
+        else:
+            return None

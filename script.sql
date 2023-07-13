@@ -14,7 +14,7 @@ CREATE TABLE VideoGames (
 CREATE TABLE library (
    id INTEGER PRIMARY KEY AUTOINCREMENT,
    user_id INTEGER NOT NULL,
-   game_id INTEGER NOT NULL,
+   game_name VARCHAR(50) NOT NULL,
    status TEXT
 );
 

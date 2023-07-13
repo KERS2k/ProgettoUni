@@ -55,8 +55,9 @@ def main():
                                     # Ask for status if inserting a new record
                                     insert_choice = input("Do you want to insert a new record? (y/n): ")
                                     if insert_choice.lower() == "y":
+                                        game_name = game_manager.get_game_name(game_id)
                                         status = input("Enter the status: ")
-                                        library.insert_record(user_id, game_id, status)
+                                        library.insert_record(user_id, game_name, status)
                                 else:
                                     print("Game not found.")
                                 break
