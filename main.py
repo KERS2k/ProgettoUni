@@ -5,8 +5,7 @@ from library import Library
 import sys
 
 def main():
-
-    #Creo la classe dbmanager
+    # Create the dbmanager instance
     dbmanager = Dbmanager()
     account_manager = AccountManager(dbmanager)
     game_manager = GameManager(dbmanager)
@@ -33,7 +32,7 @@ def main():
                     print("1. Print database")
                     print("2. Get game record")
                     print("3. Print records by user ID")
-                    print("4. Exit")
+                    print("4. Logout")
 
                     sub_choice = input("Select an option: ")
 
@@ -73,14 +72,12 @@ def main():
                         else:
                             print("No records found for User ID:", user_id)
 
-                    elif sub_choice == "4":  # Exit
-                        print("Exiting the program.")
-                        dbmanager.close_connection()
-                        sys.exit()
+                    elif sub_choice == "4":  # Logout
+                        print("Logging out.")
+                        break
 
                     else:
                         print("Invalid choice. Please try again.")
-
 
         elif choice == "2":  # Register
             name = input("Enter your name: ")
@@ -100,6 +97,7 @@ def main():
 
         else:
             print("Invalid choice. Please try again.")
+
 
 # Run the main function
 main()
