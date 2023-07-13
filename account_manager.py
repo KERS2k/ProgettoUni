@@ -2,23 +2,9 @@ import sqlite3
 import hashlib
 import secrets
 
-
 class AccountManager:
-    def __init__(self, db_name="accounts.db"):
-        self.conn = sqlite3.connect(db_name)
-        self.create_table()
-
-    def create_table(self):
-        query = '''CREATE TABLE IF NOT EXISTS users (
-                    id INTEGER PRIMARY KEY AUTOINCREMENT,
-                    name TEXT NOT NULL,
-                    surname TEXT NOT NULL,
-                    email TEXT NOT NULL UNIQUE,
-                    salt TEXT NOT NULL,
-                    password TEXT NOT NULL
-                )'''
-        self.conn.execute(query)
-        self.conn.commit()
+    def __init__(self, db):
+        self.conn = db.getConnection()
 
     def register(self, name, surname, email, password):
         salt = secrets.token_hex(16)

@@ -1,3 +1,4 @@
+from dbmanager import Dbmanager
 from account_manager import AccountManager
 from game_manager import GameManager
 from library import Library
@@ -5,10 +6,11 @@ import sys
 
 def main():
 
-
-    account_manager = AccountManager()
-    game_manager = GameManager()
-    library = Library()
+    #Creo la classe dbmanager
+    dbmanager = Dbmanager()
+    account_manager = AccountManager(dbmanager)
+    game_manager = GameManager(dbmanager)
+    library = Library(dbmanager)
 
     while True:
         # Display main menu options
@@ -73,20 +75,12 @@ def main():
 
                     elif sub_choice == "4":  # Exit
                         print("Exiting the program.")
-                        account_manager.close_connection()
-                        game_manager.close_connection()
-                        library.close_connection()
+                        dbmanager.close_connection()
                         sys.exit()
 
                     else:
                         print("Invalid choice. Please try again.")
 
-                account_manager.close_connection()
-                game_manager.close_connection()
-                library.close_connection()
-
-            else:
-                print("Login failed. Please try again.")
 
         elif choice == "2":  # Register
             name = input("Enter your name: ")
@@ -101,9 +95,7 @@ def main():
 
         elif choice == "3":  # Exit
             print("Exiting the program.")
-            account_manager.close_connection()
-            game_manager.close_connection()
-            library.close_connection()
+            dbmanager.closeConnection()
             sys.exit()
 
         else:
