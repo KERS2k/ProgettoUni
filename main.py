@@ -1,5 +1,7 @@
 from run_application import RunApplication
 
-if __name__ == "__main__":
+def main():
     app = RunApplication()
     app.run()
+
+main()
