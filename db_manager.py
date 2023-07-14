@@ -1,6 +1,6 @@
 import sqlite3
 
-class Dbmanager:
+class DbManager:
     def __init__(self):
         self.conn = sqlite3.connect("database.sqlite")
 

@@ -129,3 +129,4 @@ VALUES
             (98, 'Star Wars Jedi: Fallen Order', 'Respawn Entertainment', 'Action-adventure', '15-11-2019'),
             (99, 'Grand Theft Auto IV', 'Rockstar Games', 'Action-adventure', '29-04-2008'),
             (100, 'World of Warcraft: Wrath of the Lich King', 'Blizzard Entertainment', 'MMORPG', '13-11-2008');
+

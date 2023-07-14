@@ -61,6 +61,3 @@ class AccountManager:
             return result[0]
         else:
             return None
-
-    def close_connection(self):
-        self.conn.close()
