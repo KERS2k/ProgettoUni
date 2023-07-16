@@ -68,7 +68,8 @@ class RunApplication:
             print("2. Aggiungi un gioco alla tua libreria personale")
             print("3. Rimuovi un gioco dalla tua libreria personale")
             print("4. Stampa l'elenco dei miei videogiochi")
-            print("5. Logout")
+            print("5. Aggiorna nota")
+            print("6. Logout")
 
             sub_choice = input("Selezione un'opzione: ")
 
@@ -85,6 +86,10 @@ class RunApplication:
                 self.personal_library_manager.print_my_games(user_id)
 
             elif sub_choice == "5":
+                game_id = input("Enter the ID of the game to update the status: ")
+                self.personal_library_manager.update_status(user_id, int(game_id))
+
+            elif sub_choice == "6":
                 print("Log out")
                 break
             else:

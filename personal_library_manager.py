@@ -21,8 +21,6 @@ class Library:
             print("Errore, gioco già presente nella libreria personale o i valori inseriti sono sbagliati")
 
     def add_game_to_personal_library(self, user_id):
-        #self.personal_library_manager.add_game_to_personal_library(user_id)
-        #game_manager = GameManager("database.sqlite")
         while True:
             game_id = input("Inserisci l'ID del gioco da inserire nella propria libreria (oppure inserisci 'x' per uscire): ")
             if game_id == 'x':
@@ -83,8 +81,11 @@ class Library:
 
     def _get_game_inside_library_record(self, user_id, game_id):
         cursor = self.conn.cursor()
-        query = "SELECT * FROM personal_library_db WHERE game_id = ? AND user_id = ?"
-        cursor.execute(query, (game_id, user_id))
+        query = '''SELECT lib.user_id, vid.name AS game_name, lib.status
+                FROM personal_library_db AS lib
+                JOIN videogames_db AS vid ON lib.game_id = vid.id
+                WHERE lib.user_id = ? AND lib.game_id = ?'''
+        cursor.execute(query, (user_id, game_id))
         record = cursor.fetchone()
         return record
 
@@ -105,5 +106,25 @@ class Library:
                 print(game)
         else:
             print("No games found for User ID:", user_id)
+            
 
-    
+    def update_status(self, user_id, game_id):
+            query = "SELECT * FROM personal_library_db WHERE user_id = ? AND game_id = ?"
+            cursor = self.conn.execute(query, (user_id, game_id))
+            record = cursor.fetchone()
+
+            if record:
+                print("Current Game Record:")
+                print(record)
+                new_status = input("Enter the new status: ")
+
+                update_query = "UPDATE personal_library_db SET status = ? WHERE user_id = ? AND game_id = ?"
+                try:
+                    self.conn.execute(update_query, (new_status, user_id, game_id))
+                    self.conn.commit()
+                    print("Status updated successfully.")
+                except sqlite3.Error:
+                    print("Error updating the status.")
+            else:
+                print("No record found for the given user ID and game ID.")
+        
