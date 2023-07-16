@@ -86,7 +86,7 @@ class RunApplication:
                 self.personal_library_manager.print_my_games(user_id)
 
             elif sub_choice == "5":
-                game_id = input("Enter the ID of the game to update the status: ")
+                game_id = input("Inserisci l'ID del gioco da modificare: ")
                 self.personal_library_manager.update_status(user_id, int(game_id))
 
             elif sub_choice == "6":

@@ -66,12 +66,12 @@ class Library:
                 game_id = int(game_id)
                 record = self._get_game_inside_library_record(user_id, game_id)
                 if record:
-                    print("Game record:")
+                    print("Videogioco: ")
                     print(record)
 
                     # Richiesta di conferma per la rimozione del gioco dalla libreria
-                    delete_choice = input("Confermi di voler rimuovere il gioco dalla propria libreria? (y/n) ")
-                    if delete_choice.lower() == "y":
+                    delete_choice = input("Confermi di voler rimuovere il gioco dalla propria libreria? (s/n) ")
+                    if delete_choice.lower() == "s":
                         self._delete_record(user_id, game_id)
                 else:
                     print("Gioco non trovato")
@@ -101,30 +101,33 @@ class Library:
         games = cursor.fetchall()
 
         if games:
-            print("My Games:")
+            print("I miei giochi:")
             for game in games:
                 print(game)
         else:
-            print("No games found for User ID:", user_id)
-            
+            print("Nessun videogioco salvato", user_id)
+
 
     def update_status(self, user_id, game_id):
-            query = "SELECT * FROM personal_library_db WHERE user_id = ? AND game_id = ?"
+            query = '''SELECT lib.user_id, vid.name AS game_name, lib.status
+                    FROM personal_library_db AS lib
+                    JOIN videogames_db AS vid ON lib.game_id = vid.id
+                    WHERE lib.user_id = ? AND lib.game_id = ?'''
             cursor = self.conn.execute(query, (user_id, game_id))
             record = cursor.fetchone()
 
             if record:
-                print("Current Game Record:")
+                print("Videogioco: ")
                 print(record)
-                new_status = input("Enter the new status: ")
+                new_status = input("Inserisci la nuova nota: ")
 
                 update_query = "UPDATE personal_library_db SET status = ? WHERE user_id = ? AND game_id = ?"
                 try:
                     self.conn.execute(update_query, (new_status, user_id, game_id))
                     self.conn.commit()
-                    print("Status updated successfully.")
+                    print("Nota aggiornata")
                 except sqlite3.Error:
-                    print("Error updating the status.")
+                    print("Errore nell'aggiornare la nota")
             else:
-                print("No record found for the given user ID and game ID.")
+                print("Nessun gioco salvato con l'ID fornito")
         

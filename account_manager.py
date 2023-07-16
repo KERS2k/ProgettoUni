@@ -41,7 +41,6 @@ class AccountManager:
 
         _, _, _, _, salt, hashed_password = user
         if self._hash_password(password, salt) == hashed_password:
-            #print("Login successful.")
             return True
         else:
             return False
