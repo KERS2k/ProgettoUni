@@ -1,15 +1,12 @@
-import sqlite3
-
 class GameManager:
-    def __init__(self, db):
-        self.conn = db.getConnection()
 
-    def print_all_database(self):
+    def __init__(self, db_manager):
+        self.conn = db_manager.getConnection()
+
+    def print_all_videogames(self):
         cursor = self.conn.cursor()
-
-        cursor.execute('SELECT * FROM videogames')
+        cursor.execute('SELECT * FROM videogames_db')
         rows = cursor.fetchall()
-
         for row in rows:
             game_id, game, producer, genre, release_date = row
             print(f"ID: {game_id}")
@@ -20,21 +17,10 @@ class GameManager:
             print()
 
 
-    def get_game_record(self, game_name):
+    def get_game_record(self, game_id):
         cursor = self.conn.cursor()
-        query = "SELECT name FROM VideoGames WHERE id = ?"
-        cursor.execute(query, (game_name,))
+        query = "SELECT name FROM videogames_db WHERE id = ?"
+        cursor.execute(query, (game_id, ))
         record = cursor.fetchone()
-        return record  # Return the game name
+        return record  
     
-    def get_game_name(self, game_id):
-        cursor = self.conn.cursor()
-        query = "SELECT name FROM VideoGames WHERE id = ?"
-        cursor.execute(query, (game_id,))
-        record = cursor.fetchone()
-
-        if record:
-            game_name = record[0]
-            return game_name
-        else:
-            return None

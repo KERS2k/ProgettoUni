@@ -1,108 +1,96 @@
 from db_manager import DbManager
 from account_manager import AccountManager
 from game_manager import GameManager
-from library import Library
+from personal_library_manager import Library
 import sys
 
 class RunApplication:
-    def __init__(self):
-        # Create instances of required classes
-        dbmanager = DbManager()
-        account_manager = AccountManager(dbmanager)
-        game_manager = GameManager(dbmanager)
-        library = Library(dbmanager)
 
-        self.dbmanager = dbmanager
+    def __init__(self):
+        db_manager = DbManager()
+        account_manager = AccountManager(db_manager)
+        game_manager = GameManager(db_manager)
+        library = Library(db_manager)
+
+        self.db_manager = db_manager
         self.account_manager = account_manager
         self.game_manager = game_manager
-        self.library = library
+        self.personal_library_manager = library
 
+
+    
     def run(self):
         while True:
-            # Display main menu options
-            print("1. Log in")
-            print("2. Register")
-            print("3. Exit")
+            self.primary_menu()
 
-            choice = input("Select an option: ")
 
-            if choice == "1":  # Log in
-                email = input("Enter your email: ")
-                password = input("Enter your password: ")
 
-                if self.account_manager.login(email, password):
-                    user_id = self.account_manager.get_user_id(email)  # Retrieve user ID
-                    print("Login successful.")
+    def primary_menu(self):
+        #Menu 1
+        print("1. Log in")
+        print("2. Registrati")
+        print("3. Esci")
 
-                    while True:
-                        # Display secondary menu options
-                        print("1. Print database")
-                        print("2. Get game record")
-                        print("3. Print records by user ID")
-                        print("4. Logout")
+        choice = input("Selezione un'opzione: ")
 
-                        sub_choice = input("Select an option: ")
-
-                        if sub_choice == "1":  # Print database
-                            self.game_manager.print_all_database()
-
-                        elif sub_choice == "2":  # Get game record
-                            while True:
-                                game_id = input("Enter the game ID (or 'q' to quit): ")
-                                if game_id == 'q':
-                                    break
-
-                                try:
-                                    game_id = int(game_id)
-                                    record = self.game_manager.get_game_record(game_id)
-                                    if record:
-                                        print("Game record:")
-                                        print(record)
-
-                                        # Ask for status if inserting a new record
-                                        insert_choice = input("Do you want to insert a new record? (y/n): ")
-                                        if insert_choice.lower() == "y":
-                                            game_name = self.game_manager.get_game_name(game_id)
-                                            status = input("Enter the status: ")
-                                            self.library.insert_record(user_id, game_name, status)
-                                    else:
-                                        print("Game not found.")
-                                    break
-                                except ValueError:
-                                    print("Invalid game ID. Please enter a valid integer.")
-
-                        elif sub_choice == "3":  # Print records by user ID
-                            records = self.library.get_records_by_user_id(user_id)
-                            if records:
-                                print("Records for User ID:", user_id)
-                                for record in records:
-                                    print(record)
-                            else:
-                                print("No records found for User ID:", user_id)
-
-                        elif sub_choice == "4":  # Logout
-                            print("Logging out.")
-                            break
-
-                        else:
-                            print("Invalid choice. Please try again.")
-
-            elif choice == "2":  # Register
-                name = input("Enter your name: ")
-                surname = input("Enter your surname: ")
-                email = input("Enter your email: ")
-                password = input("Enter your password: ")
-
-                if self.account_manager.register(name, surname, email, password):
-                    print("Registration successful.")
-                else:
-                    print("Registration failed. Please try again.")
-
-            elif choice == "3":  # Exit
-                print("Exiting the program.")
-                self.dbmanager.closeConnection()
-                sys.exit()
-
+        if choice == "1":  # Log in
+            email = input("Email: ")
+            password = input("Password: ")
+            if self.account_manager.login(email, password):
+                print("Log in effettuato con successo")
+                user_id = self.account_manager.get_user_id(email)
+                self.secondary_menu(user_id)
             else:
-                print("Invalid choice. Please try again.")
+                print("Errore durante il login. Riprova.")
 
+        elif choice == "2":  # Registrazione
+            name = input("Nome: ")
+            surname = input("Cognome: ")
+            email = input("Email: ")
+            password = input("Password: ")
+            if self.account_manager.register(name, surname, email, password):
+                print("Registrazione effettuata con successo")
+                user_id = self.account_manager.get_user_id(email) 
+                self.secondary_menu(user_id)
+            else:
+                print("Errore durante la registrazione. Riprova.")
+
+        elif choice == "3":  # Exit
+            self.exit_program()
+
+        else:
+            print("Scelta invalida, si chiede di riprovare")
+
+    def secondary_menu(self, user_id):
+        while True:
+            # Menu 2
+            print("1. Stampa l'elenco di videogiochi disponibili")
+            print("2. Aggiungi un gioco alla tua libreria personale")
+            print("3. Rimuovi un gioco dalla tua libreria personale")
+            print("4. Stampa l'elenco dei miei videogiochi")
+            print("5. Logout")
+
+            sub_choice = input("Selezione un'opzione: ")
+
+            if sub_choice == "1":
+                self.game_manager.print_all_videogames()
+
+            elif sub_choice == "2":
+                self.personal_library_manager.add_game_to_personal_library(user_id)
+
+            elif sub_choice == "3":
+                self.personal_library_manager.delete_record_from_personal_library(user_id)
+
+            elif sub_choice == "4":
+                self.personal_library_manager.print_my_games(user_id)
+
+            elif sub_choice == "5":
+                print("Log out")
+                break
+            else:
+                print("Scelta invalida, si chiede di riprovare")
+
+    def exit_program(self):
+        print("Chiusura del programma...")
+        self.db_manager.closeConnection()
+        sys.exit()

@@ -3,58 +3,51 @@ import hashlib
 import secrets
 
 class AccountManager:
-    def __init__(self, db):
-        self.conn = db.getConnection()
+
+    def __init__(self, db_manager):
+        self.conn = db_manager.getConnection()
+
+
+
+
 
     def register(self, name, surname, email, password):
         salt = secrets.token_hex(16)
         hashed_password = self._hash_password(password, salt)
 
-        query = '''INSERT INTO users (name, surname, email, salt, password)
+        query = '''INSERT INTO users_db (name, surname, email, salt, password)
                     VALUES (?, ?, ?, ?, ?)'''
         try:
             self.conn.execute(query, (name, surname, email, salt, hashed_password))
             self.conn.commit()
             return True
         except sqlite3.IntegrityError:
-            print("User with the provided email already exists.")
             return False
-
-    def login(self, email, password):
-        query = '''SELECT * FROM users WHERE email = ?'''
-        cursor = self.conn.execute(query, (email,))
-        user = cursor.fetchone()
-        if user is None:
-            print("Invalid email or password.")
-            return False
-
-        _, _, _, _, salt, hashed_password = user
-        if self._hash_password(password, salt) == hashed_password:
-            print("Login successful.")
-            return True
-        else:
-            print("Invalid email or password.")
-            return False
-
+        
     def _hash_password(self, password, salt):
         salted_password = (password + salt).encode()
         hashed_password = hashlib.sha256(salted_password).hexdigest()
         return hashed_password
     
-    def get_account_info(self, account_id):
-        query = '''SELECT * FROM users WHERE id = ?'''
-        cursor = self.conn.execute(query, (account_id,))
+
+
+
+    def login(self, email, password):
+        query = '''SELECT * FROM users_db WHERE email = ?'''
+        cursor = self.conn.execute(query, (email,))
         user = cursor.fetchone()
         if user is None:
-            print("No user found with the provided ID.")
-            return None
+            return False
 
-        account_id, name, surname, email, _, _ = user
-        account_info = f"ID: {account_id}\nName: {name}\nSurname: {surname}\nEmail: {email}"
-        return account_info
+        _, _, _, _, salt, hashed_password = user
+        if self._hash_password(password, salt) == hashed_password:
+            #print("Login successful.")
+            return True
+        else:
+            return False
     
-    def get_user_id(self, email):
-        query = "SELECT id FROM users WHERE email = ?"
+    def get_user_id(self, email): 
+        query = "SELECT id FROM users_db WHERE email = ?"
         cursor = self.conn.execute(query, (email,))
         result = cursor.fetchone()
         if result:
