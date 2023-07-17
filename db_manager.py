@@ -1,14 +1,17 @@
+import abc
 import sqlite3
 
-class DbManager:
-    def __init__(self):
-        self.conn = sqlite3.connect("database.sqlite")
+class DbManager(abc.ABC):
 
+    def __init__(self):
+        # Costruttore della classe DbManager
+        self.conn = sqlite3.connect("database.sqlite")  # Crea una connessione al database SQLite "database.sqlite"
+
+    @abc.abstractmethod
     def getConnection(self):
-        return self.conn
+        # Metodo astratto per ottenere l'oggetto di connessione al database
+        pass
 
     def closeConnection(self):
-        self.conn.close()
-    
-    
-
+        # Metodo per chiudere la connessione al database
+        self.conn.close()  # Chiude la connessione al database SQLite

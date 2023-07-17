@@ -23,7 +23,9 @@ CREATE TABLE personal_library_db (
    id INTEGER PRIMARY KEY AUTOINCREMENT,
    user_id INTEGER NOT NULL,
    game_id INTEGER NOT NULL,
-   status TEXT
+   status TEXT,
+   FOREIGN KEY (user_id) REFERENCES users_db(id),
+   FOREIGN KEY (game_id) REFERENCES videogames_db(id)
 );
 
 
